@@ -4,7 +4,6 @@ var _ = require('lodash');
 
 const sqlite3 = require('sqlite3');
 const {open} = require('sqlite');
-const { result } = require('lodash');
 sqlite3.verbose();
 
 function ronkfinder(startindex,text){
@@ -25,7 +24,7 @@ function ronkfinder(startindex,text){
     } ,result)
 }
 
-const BASE = 1;
+const BASE = 3;
 
 function ronklevel(base,ronks){
     return Math.floor(-1/2-base+Math.sqrt(8*ronks+(1+2*base)*(1+2*base))/2)
@@ -39,6 +38,10 @@ function levelup(msg,level){
     if(msg.author){
         msg.channel.send(`GG, ${msg.author} you just advanced to level ${level}`);
     }
+}
+
+function checklevel(msg,ronks){
+    msg.channel.send(`${msg.author} - Level ${ronklevel(BASE,ronks)} – ${levelronks(BASE,ronklevel(BASE,ronks)+1)-ronks} ronk until level ${ronklevel(BASE,ronks)+1}`);
 }
 
 const client = new Discord.Client();
@@ -57,6 +60,16 @@ const client = new Discord.Client();
     
     client.on('message', async (msg) => {
         if(msg.author===undefined || msg.channel.guild===undefined){
+            return
+        }
+        if(msg.content.startsWith("!ronk")){
+            var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
+                msg.channel.guild.id,
+                msg.author.id,
+            ]).catch(console.err);
+            if(usr){
+                checklevel(msg,usr.score);
+            }
             return
         }
         var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
@@ -94,4 +107,4 @@ const client = new Discord.Client();
 })()
 
 
-client.login(process.env.TEST_DISCORD_BOT_TOKEN);
+client.login(process.env.PROD_DISCORD_BOT_TOKEN);
