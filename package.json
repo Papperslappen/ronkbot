@@ -1,0 +1,19 @@
+{
+  "name": "ronkbot",
+  "version": "1.0.0",
+  "description": "A bot to ronk them all",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@papperslappen",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
+    "sqlite": "^4.0.19",
+    "sqlite3": "^5.0.1"
+  }
+}
