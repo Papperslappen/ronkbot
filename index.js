@@ -41,6 +41,7 @@ function levelup(msg,level){
 }
 
 function checklevel(msg,ronks){
+    console.log("asdfasdf");
     msg.channel.send(`${msg.author} - Level ${ronklevel(BASE,ronks)} – ${levelronks(BASE,ronklevel(BASE,ronks)+1)-ronks} ronk until level ${ronklevel(BASE,ronks)+1}`);
 }
 
@@ -64,14 +65,14 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
             return
         }
         if(msg.content.startsWith("!ronk")){
-            if(!msg.channel.guild){
+            if(!msg.channel.guild.id){
                 return
             }
             var row = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
                 msg.channel.guild.id,
                 msg.author.id,
             ]).catch(console.error);
-            if(usr){
+            if(row){
                 checklevel(msg,row.score);
             }
             return
