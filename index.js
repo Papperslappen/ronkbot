@@ -44,7 +44,8 @@ function checklevel(msg,ronks){
     msg.channel.send(`${msg.author} - Level ${ronklevel(BASE,ronks)} – ${levelronks(BASE,ronklevel(BASE,ronks)+1)-ronks} ronk until level ${ronklevel(BASE,ronks)+1}`);
 }
 
-const client = new Discord.Client();
+const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','GUILD_MESSAGES','GUILD_PRESENCES'] }});
+
 (async () => {
     // open the database
     const db = await open({
@@ -52,7 +53,7 @@ const client = new Discord.Client();
       driver: sqlite3.Database
     });
 
-    db.run('CREATE TABLE IF NOT EXISTS folx (server NUM,user NUM,score NUM,endindex NUM);')
+    db.run('CREATE TABLE IF NOT EXISTS folx (server TEXT,user TEXT,score NUM,endindex NUM);')
 
     client.once('ready', async () => {
         console.log('Ready!');
@@ -63,20 +64,49 @@ const client = new Discord.Client();
             return
         }
         if(msg.content.startsWith("!ronk")){
-            var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
+            if(!msg.channel.guild){
+                return
+            }
+            var row = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
                 msg.channel.guild.id,
                 msg.author.id,
-            ]).catch(console.err);
+            ]).catch(console.error);
             if(usr){
-                checklevel(msg,usr.score);
+                checklevel(msg,row.score);
             }
+            return
+        }
+        if(msg.content.startsWith("!topronk")){
+            if(!msg.channel.guild){
+                return
+            }
+            console.log("TOPRONK")
+            var toplist = await db.all('SELECT CAST(user AS TEXT) AS user,score,endindex FROM folx WHERE server=? ORDER BY score DESC, endindex DESC LIMIT 10;',[
+                msg.channel.guild.id,
+            ]).catch(console.error);
+            const embed=new Discord.MessageEmbed()
+                .setColor('#FFCCCC')
+                .setTitle('Top Ronk')
+                .setThumbnail(msg.client.user.avatarURL);
+
+                for await (r of toplist.map(async (row,index)=>{
+                    const member = await msg.channel.guild.members.fetch(row.user).catch(console.error);
+                    return {'title':`Plats: ${index+1}`,'text':`Level: ${ronklevel(BASE,row.score)}, Ronk: ${row.score} – ${member.displayName}`}
+                })){
+                    embed.addField(r.title,r.text);
+                }
+                
+                
+
+            embed.setTimestamp()
+                .setFooter('Ronkbot is shamefully presented by Papperslappen');
+            msg.channel.send(embed);
             return
         }
         var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
             msg.channel.guild.id,
             msg.author.id,
-        ]).catch(console.err);
-        console.log(usr);
+        ]).catch(console.error);
         var ronks = 0;
         var endindex = 0;
         if(usr){
@@ -84,7 +114,7 @@ const client = new Discord.Client();
             endindex = usr.endindex;
         }
         
-        var result = ronkfinder(endindex,msg.content);
+        var result = ronkfinder(endindex,msg.content.toLowerCase());
         console.log(result);
         var oldronks;
         if(usr){
@@ -106,5 +136,8 @@ const client = new Discord.Client();
     });
 })()
 
-
-client.login(process.env.PROD_DISCORD_BOT_TOKEN);
+if(process.env.PROD){
+    client.login(process.env.PROD_DISCORD_BOT_TOKEN);
+}else{
+    client.login(process.env.TEST_DISCORD_BOT_TOKEN);
+}
