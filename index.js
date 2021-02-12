@@ -104,6 +104,26 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
             msg.channel.send(embed);
             return
         }
+        if(msg.content.startsWith("!vaska")){
+            var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
+                msg.channel.guild.id,
+                msg.author.id,
+            ]).catch(console.error);
+            const args = msg.content.slice(1).trim().split(' ');
+            if(args.length > 1){
+                const arg = Number(args[1]);
+                if(!isNaN(arg) && arg<usr.score){
+                    const newscore = usr.score - arg;
+                    await db.run('UPDATE folx SET score = ? WHERE server = ? AND user=?',[
+                        newscore,
+                        msg.channel.guild.id,
+                        msg.author.id,
+                    ]);
+                    checklevel(msg,newscore);
+                }
+            }
+            return
+        }
         var usr = await db.get('SELECT * FROM folx WHERE server=? AND user=?;',[
             msg.channel.guild.id,
             msg.author.id,
