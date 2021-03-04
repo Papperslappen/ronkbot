@@ -41,7 +41,6 @@ function levelup(msg,level){
 }
 
 function checklevel(msg,ronks){
-    console.log("asdfasdf");
     msg.channel.send(`${msg.author} - Level ${ronklevel(BASE,ronks)} – ${levelronks(BASE,ronklevel(BASE,ronks)+1)-ronks} ronk until level ${ronklevel(BASE,ronks)+1}`);
 }
 
@@ -112,7 +111,7 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
             const args = msg.content.slice(1).trim().split(' ');
             if(args.length > 1){
                 const arg = Number(args[1]);
-                if(!isNaN(arg) && arg<usr.score){
+                if(!isNaN(arg) && arg<usr.score && arg>=0){
                     const newscore = usr.score - arg;
                     await db.run('UPDATE folx SET score = ? WHERE server = ? AND user=?',[
                         newscore,
