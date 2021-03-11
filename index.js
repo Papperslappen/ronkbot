@@ -54,6 +54,12 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
     });
 
     db.run('CREATE TABLE IF NOT EXISTS folx (server TEXT,user TEXT,score NUM,endindex NUM);')
+    
+    ////////////MODULES&///////////////////
+    require("./movies.js").init(client,db);
+
+
+    ///////////////////////////////////////
 
     client.once('ready', async () => {
         console.log('Ready!');
@@ -155,6 +161,8 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
         }
     });
 })()
+
+
 
 if(process.env.PROD){
     client.login(process.env.PROD_DISCORD_BOT_TOKEN);
