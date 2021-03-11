@@ -28,7 +28,7 @@ module.exports.init = (client,db) => {
         if(msg.content.startsWith("!film ")){
             const args = msg.content.trim().split(' ').slice(1).join(' ');
             try{
-                const res = await moviedb.searchMovie({ query: args });
+                const res = await moviedb.searchMovie({ query: args , language:'sv'});
                 if(res.results.length > 0){
                     const movie = res.results[0];
                     msg.channel.send(makeMovieEmbed(movie));
