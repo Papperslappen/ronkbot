@@ -46,6 +46,7 @@ function checklevel(msg,ronks){
 
 const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','GUILD_MESSAGES','GUILD_PRESENCES'] }});
 
+
 (async () => {
     // open the database
     const db = await open({
@@ -56,7 +57,8 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
     db.run('CREATE TABLE IF NOT EXISTS folx (server TEXT,user TEXT,score NUM,endindex NUM);')
     
     ////////////MODULES&///////////////////
-    require("./movies.js").init(client,db);
+    require("./dice.js").init(client);
+    //require("./movies.js").init(client,db);
 
 
     ///////////////////////////////////////
