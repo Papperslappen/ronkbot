@@ -45,7 +45,7 @@ function format_roll_data(msg,data){
     if(2 <= data.size && data.number_of_rolls <= 15){
       return `${formula} = **${data.result}**`;
     }else{
-      return (`${formula}`);
+      return (`${data.result}`);
     }
 
 }
