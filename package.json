@@ -1,6 +1,6 @@
 {
   "name": "ronkbot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A bot to ronk them all",
   "main": "index.js",
   "scripts": {
@@ -11,13 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
-    "discord.js": "^12.5.1",
+    "discord.js": "^13.3.1",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.20",
-    "moviedb-promise": "^3.1.6",
     "node-cache": "^5.1.2",
     "pegjs": "^0.10.0",
-    "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1"
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2"
+  },
+  "resolutions": {
+    "node-gyp": "^8"
   }
 }

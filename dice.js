@@ -3,7 +3,7 @@ const sleep = require('util').promisify(setTimeout)
 
 module.exports = {
     init: function(client){
-        client.on('message',(msg) => {
+        client.on('messageCreate',(msg) => {
           if(msg.content.length <= 20){
             roll(msg).then(console.log).catch(console.err);
           }
