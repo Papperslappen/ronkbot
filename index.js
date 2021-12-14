@@ -44,7 +44,7 @@ function checklevel(msg,ronks){
     msg.channel.send(`${msg.author} - Level ${ronklevel(BASE,ronks)} – ${levelronks(BASE,ronklevel(BASE,ronks)+1)-ronks} ronk until level ${ronklevel(BASE,ronks)+1}`);
 }
 
-const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','GUILD_MESSAGES','GUILD_PRESENCES'] }});
+const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_MEMBERS','GUILD_MESSAGES','GUILD_PRESENCES'] });
 
 
 (async () => {
@@ -58,16 +58,14 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
     
     ////////////MODULES&///////////////////
     require("./dice.js").init(client);
-    //require("./movies.js").init(client,db);
-
-
+    // require("./emote.js").init(client);
     ///////////////////////////////////////
 
     client.once('ready', async () => {
         console.log('Ready!');
     });
     
-    client.on('message', async (msg) => {
+    client.on('messageCreate', async (msg) => {
         if(msg.author===undefined || msg.channel.guild===undefined){
             return
         }
@@ -108,7 +106,7 @@ const client = new Discord.Client({ ws: { intents: ['GUILDS', 'GUILD_MEMBERS','G
 
             embed.setTimestamp()
                 .setFooter('Ronkbot is shamefully presented by Papperslappen');
-            msg.channel.send(embed);
+            msg.channel.send({embeds: [embed]});
             return
         }
         if(msg.content.startsWith("!vaska")){
